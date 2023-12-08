@@ -1,5 +1,7 @@
+import PostTweetForm from '../components/PostTweetForm';
+
 const Home = () => {
-  return <h1>HOME</h1>;
+  return <PostTweetForm />;
 };
 
 export default Home;
