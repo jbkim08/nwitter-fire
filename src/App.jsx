@@ -3,7 +3,7 @@ import Layout from './components/Layout';
 import Home from './routes/Home';
 import Profile from './routes/Profile';
 import Login from './routes/Login';
-import CreateUser from './routes/CreateUser';
+import CreateAccount from './routes/CreateAccount';
 import styled, { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
 import { useEffect, useState } from 'react';
@@ -48,8 +48,8 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: '/create-user',
-    element: <CreateUser />,
+    path: '/create-account',
+    element: <CreateAccount />,
   },
 ]);
 
