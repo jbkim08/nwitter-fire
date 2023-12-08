@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { auth } from '../firebase';
+import { FirebaseError } from 'firebase/app';
 
 const Wrapper = styled.div`
   height: 100%;
@@ -24,6 +25,7 @@ const Form = styled.form`
   flex-direction: column;
   gap: 10px;
   width: 100%;
+  margin-bottom: 10px;
 `;
 
 const Input = styled.input`
@@ -64,6 +66,7 @@ export default function CreateAccount() {
   };
   const onSubmit = async (e) => {
     e.preventDefault();
+    setError(null); //에러 초기화
     if (isLoading || name === '' || email === '' || password === '') return;
     try {
       setLoading(true);
@@ -74,7 +77,10 @@ export default function CreateAccount() {
       console.log(credentials.user);
       navigate('/');
     } catch (e) {
-      // setError
+      if (e instanceof FirebaseError) {
+        //console.log(e.code, e.message);
+        setError(e.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -109,7 +115,7 @@ export default function CreateAccount() {
         />
         <Input type="submit" value={isLoading ? 'Loading...' : 'Create Account'} />
       </Form>
-      {error !== '' ? <Error>{error}</Error> : null}
+      {error && <Error>{error}</Error>}
     </Wrapper>
   );
 }
