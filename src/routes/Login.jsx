@@ -3,7 +3,15 @@ import { auth } from '../firebase';
 import { Link, useNavigate } from 'react-router-dom';
 import { FirebaseError } from 'firebase/app';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { Error, Form, Input, Switcher, Title, Wrapper } from '../components/auth-components';
+import {
+  Error,
+  Form,
+  Input,
+  Switcher,
+  Title,
+  Wrapper,
+  errorMessageToKorean,
+} from '../components/auth-components';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -31,7 +39,7 @@ export default function Login() {
       navigate('/');
     } catch (e) {
       if (e instanceof FirebaseError) {
-        setError(e.message);
+        setError(errorMessageToKorean(e));
       }
     } finally {
       setLoading(false);

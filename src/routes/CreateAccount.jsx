@@ -3,7 +3,15 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { FirebaseError } from 'firebase/app';
-import { Form, Input, Switcher, Title, Wrapper } from '../components/auth-components';
+import {
+  Error,
+  Form,
+  Input,
+  Switcher,
+  Title,
+  Wrapper,
+  errorMessageToKorean,
+} from '../components/auth-components';
 
 export default function CreateAccount() {
   const navigate = useNavigate(); //네비객체
@@ -37,7 +45,7 @@ export default function CreateAccount() {
     } catch (e) {
       if (e instanceof FirebaseError) {
         //console.log(e.code, e.message);
-        setError(e.message);
+        setError(errorMessageToKorean(e));
       }
     } finally {
       setLoading(false);
