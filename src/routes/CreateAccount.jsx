@@ -1,5 +1,8 @@
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { auth } from '../firebase';
 
 const Wrapper = styled.div`
   height: 100%;
@@ -43,13 +46,13 @@ const Error = styled.span`
 `;
 
 export default function CreateAccount() {
+  const navigate = useNavigate(); //네비객체
   const [isLoading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const onChange = (e) => {
-    //console.log(e);
     const { name, value } = e.target;
     if (name === 'name') {
       setName(value);
@@ -59,13 +62,17 @@ export default function CreateAccount() {
       setPassword(value);
     }
   };
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(name, email, password);
+    if (isLoading || name === '' || email === '' || password === '') return;
     try {
-      // create an account
-      // set the name of the user.
-      // redirect to the home page
+      setLoading(true);
+      const credentials = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(credentials.user, {
+        displayName: name,
+      });
+      console.log(credentials.user);
+      navigate('/');
     } catch (e) {
       // setError
     } finally {
