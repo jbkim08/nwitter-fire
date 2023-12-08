@@ -8,6 +8,7 @@ import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
 import { useEffect, useState } from 'react';
 import LoadingScreen from './components/Loading-screen';
+import { auth } from './firebase';
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -48,9 +49,10 @@ const router = createBrowserRouter([
 
 function App() {
   const [isLoding, setIsLoding] = useState(true);
-  const init = () => {
+  const init = async () => {
     //파이어베이스 체크
-    setTimeout(() => setIsLoding(false), 2000);
+    await auth.authStateReady();
+    setIsLoding(false);
   };
   useEffect(() => {
     init();
