@@ -6,6 +6,8 @@ import Login from './routes/Login';
 import CreateUser from './routes/CreateUser';
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
+import { useEffect, useState } from 'react';
+import LoadingScreen from './components/Loading-screen';
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -45,10 +47,18 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const [isLoding, setIsLoding] = useState(true);
+  const init = () => {
+    //파이어베이스 체크
+    setTimeout(() => setIsLoding(false), 2000);
+  };
+  useEffect(() => {
+    init();
+  }, []);
   return (
     <>
       <GlobalStyle />
-      <RouterProvider router={router} />
+      {isLoding ? <LoadingScreen /> : <RouterProvider router={router} />}
     </>
   );
 }
