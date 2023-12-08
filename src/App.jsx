@@ -4,7 +4,7 @@ import Home from './routes/Home';
 import Profile from './routes/Profile';
 import Login from './routes/Login';
 import CreateUser from './routes/CreateUser';
-import { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
 import { useEffect, useState } from 'react';
 import LoadingScreen from './components/Loading-screen';
@@ -20,6 +20,12 @@ const GlobalStyle = createGlobalStyle`
     color: white;
     font-family: system-ui, -apple-system, sans-serif;
   }
+`;
+
+const Wrapper = styled.div`
+  height: 100vh;
+  display: flex;
+  justify-content: center;
 `;
 
 const router = createBrowserRouter([
@@ -59,8 +65,10 @@ function App() {
   }, []);
   return (
     <>
-      <GlobalStyle />
-      {isLoding ? <LoadingScreen /> : <RouterProvider router={router} />}
+      <Wrapper>
+        <GlobalStyle />
+        {isLoding ? <LoadingScreen /> : <RouterProvider router={router} />}
+      </Wrapper>
     </>
   );
 }
