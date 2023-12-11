@@ -1,4 +1,4 @@
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { db } from '../firebase';
@@ -10,26 +10,29 @@ const Wrapper = styled.div`
 
 export default function Timeline() {
   const [tweets, setTweet] = useState([]);
-  const fetchTweets = async () => {
-    // tweets 컬렉션에서 최신트윗순으로 가져오기
-    const q = query(collection(db, 'tweets'), orderBy('createdAt', 'desc'));
-    const snapshot = await getDocs(q);
-    //console.log(snapshot.docs);
-    const tweets = snapshot.docs.map((doc) => {
-      const { tweet, createdAt, userId, username, photo } = doc.data();
-      return {
-        tweet,
-        createdAt,
-        userId,
-        username,
-        photo,
-        id: doc.id,
-      };
-    });
-    setTweet(tweets);
-  };
+
   useEffect(() => {
+    let unsub = null;
+    const fetchTweets = async () => {
+      // tweets 컬렉션에서 최신트윗순으로 가져오기
+      const q = query(collection(db, 'tweets'), orderBy('createdAt', 'desc'));
+      unsub = onSnapshot(q, (snapshot) => {
+        const tweets = snapshot.docs.map((doc) => {
+          const { tweet, createdAt, userId, username, photo } = doc.data();
+          return {
+            tweet,
+            createdAt,
+            userId,
+            username,
+            photo,
+            id: doc.id,
+          };
+        });
+        setTweet(tweets);
+      });
+    };
     fetchTweets(); //모든 트윗들을 가져와 tweets에 저장
+    return () => unsub();
   }, []);
   return (
     <Wrapper>
