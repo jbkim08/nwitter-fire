@@ -1,6 +1,8 @@
 import { styled } from 'styled-components';
-import { auth } from '../firebase';
+import { auth, storage } from '../firebase';
 import { useState } from 'react';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { updateProfile } from 'firebase/auth';
 
 const Wrapper = styled.div`
   display: flex;
@@ -35,7 +37,21 @@ const Name = styled.span`
 export default function Profile() {
   const user = auth.currentUser;
   const [avatar, setAvatar] = useState(user?.photoURL);
-
+  const onAvatarChange = async (e) => {
+    const { files } = e.target;
+    if (!user) return;
+    if (files && files.length === 1) {
+      const file = files[0];
+      //이미지 업로드시 참조주소 만들기 avatars/유저id
+      const locationRef = ref(storage, `avatars/${user?.uid}`);
+      const result = await uploadBytes(locationRef, file);
+      const avatarUrl = await getDownloadURL(result.ref);
+      setAvatar(avatarUrl);
+      await updateProfile(user, {
+        photoURL: avatarUrl,
+      });
+    }
+  };
   return (
     <Wrapper>
       <AvatarUpload htmlFor="avatar">
@@ -52,7 +68,7 @@ export default function Profile() {
           </svg>
         )}
       </AvatarUpload>
-      <AvatarInput id="avatar" type="file" accept="image/*" />
+      <AvatarInput onChange={onAvatarChange} id="avatar" type="file" accept="image/*" />
       <Name>{user?.displayName ?? '익명의 유저'}</Name>
     </Wrapper>
   );
