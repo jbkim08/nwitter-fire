@@ -14,6 +14,7 @@ export default function Timeline() {
     // tweets 컬렉션에서 최신트윗순으로 가져오기
     const q = query(collection(db, 'tweets'), orderBy('createdAt', 'desc'));
     const snapshot = await getDocs(q);
+    //console.log(snapshot.docs);
     const tweets = snapshot.docs.map((doc) => {
       const { tweet, createdAt, userId, username, photo } = doc.data();
       return {
