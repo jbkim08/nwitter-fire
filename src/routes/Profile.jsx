@@ -46,6 +46,8 @@ export default function Profile() {
   const user = auth.currentUser;
   const [avatar, setAvatar] = useState(user?.photoURL);
   const [tweets, setTweets] = useState([]);
+  const [name, setName] = useState('');
+  const [isUpdate, setIsUpdate] = useState(false);
   const fetchTweets = async () => {
     const q = query(
       collection(db, 'tweets'),
@@ -87,6 +89,15 @@ export default function Profile() {
       });
     }
   };
+
+  const updateName = async () => {
+    if (!name || name.trim().length < 2) return;
+    if (!user) return;
+    await updateProfile(user, {
+      displayName: name,
+    });
+    setIsUpdate(false);
+  };
   return (
     <Wrapper>
       <AvatarUpload htmlFor="avatar">
@@ -105,6 +116,16 @@ export default function Profile() {
       </AvatarUpload>
       <AvatarInput onChange={onAvatarChange} id="avatar" type="file" accept="image/*" />
       <Name>{user?.displayName ?? '익명의 유저'}</Name>
+
+      {isUpdate ? (
+        <>
+          <input onChange={(e) => setName(e.target.value)} type="text" placeholder="새이름..." />
+          <button onClick={updateName}>저장</button>
+        </>
+      ) : (
+        <button onClick={() => setIsUpdate(true)}>수정</button>
+      )}
+
       <Tweets>{tweets && tweets.map((tweet) => <Tweet key={tweet.id} {...tweet} />)}</Tweets>
     </Wrapper>
   );
