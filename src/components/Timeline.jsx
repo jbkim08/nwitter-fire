@@ -1,4 +1,4 @@
-import { collection, getDocs, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { collection, getDocs, limit, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { db } from '../firebase';
@@ -15,7 +15,7 @@ export default function Timeline() {
     let unsub = null;
     const fetchTweets = async () => {
       // tweets 컬렉션에서 최신트윗순으로 가져오기
-      const q = query(collection(db, 'tweets'), orderBy('createdAt', 'desc'));
+      const q = query(collection(db, 'tweets'), orderBy('createdAt', 'desc'), limit(25));
       unsub = onSnapshot(q, (snapshot) => {
         const tweets = snapshot.docs.map((doc) => {
           const { tweet, createdAt, userId, username, photo } = doc.data();
